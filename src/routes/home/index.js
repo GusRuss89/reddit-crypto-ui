@@ -34,6 +34,7 @@ export default class Home extends Component {
 	}
 
 	handleSliderUpdate = (data) => {
+		console.log(data);
 		this.setState({
 			minCoinRank: data.values[0],
 			maxCoinRank: data.values[1]
@@ -53,7 +54,7 @@ export default class Home extends Component {
 				<p style={{margin: '-8px 0 20px'}}>Last updated {timeAgo.format(parseInt(state.lastUpdated, 10))}</p>
 				<div style={{display: 'inline-block', width: '100%', maxWidth: '400px'}}>
 					<div>Include coins ranked: {state.minCoinRank} - {state.maxCoinRank}</div> 
-					<Rheostat min={1} max={200} values={[1, 200]} snap onValuesUpdated={this.handleSliderUpdate} />
+					<Rheostat min={1} max={200} values={[state.minCoinRank, state.maxCoinRank]} snap onValuesUpdated={this.handleSliderUpdate} />
 				</div>
 				<br style={{clear: 'both'}} />
 				{this.renderCoins()}
