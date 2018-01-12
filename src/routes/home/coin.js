@@ -32,6 +32,10 @@ export default class Coin extends Component {
 		return <span style={{color: colour}}>{val}%</span>;
 	}
 
+	renderTidbit = (key, value) => {
+		return <div style={{display: 'inline-block', marginRight: '15px' }}><strong>{key}:</strong> {value}</div>;
+	}
+
 	renderPosts = () => {
 		return this.props.coin.posts.map(post => (
 			<List.LinkItem href={post.url} target="_blank">{post.title}</List.LinkItem>
@@ -50,14 +54,14 @@ export default class Coin extends Component {
 				<Card.Primary>
 					<Card.Title large>{coin.name} (<a href={`https://coinmarketcap.com/currencies/${coin.id}`} target="_blank">{coin.symbol}</a>)</Card.Title>
 					<Card.Subtitle>
-						<div style={{display: 'inline-block', marginRight: '15px' }}><strong>Market Cap:</strong> {formatter.format(coin.market_cap_usd)}</div>
-						<div style={{display: 'inline-block', marginRight: '15px' }}><strong>CMC Rank:</strong> {coin.rank}</div>
-						<div style={{display: 'inline-block', marginRight: '15px' }}><strong>Post Mentions:</strong> {coin.postMentions}</div>
-						<div style={{display: 'inline-block', marginRight: '15px' }}><strong>Comment Mentions:</strong> {coin.commentMentions}</div>
-						<div style={{display: 'inline-block', marginRight: '15px' }}><strong>Weighted Score:</strong> {coin.totalScore.toFixed(2)}</div>
-						<div style={{display: 'inline-block', marginRight: '15px' }}><strong>1hr:</strong> {this.formatPercent(coin.percent_change_1h)}</div>
-						<div style={{display: 'inline-block', marginRight: '15px' }}><strong>24hr:</strong> {this.formatPercent(coin.percent_change_24h)}</div>
-						<div style={{display: 'inline-block', marginRight: '15px' }}><strong>7d:</strong> {this.formatPercent(coin.percent_change_7d)}</div>
+						{this.renderTidbit('Market Cap', formatter.format(coin.market_cap_usd))}
+						{this.renderTidbit('CMC Rank', coin.rank)}
+						{this.renderTidbit('1hr', this.formatPercent(coin.percent_change_1h))}
+						{this.renderTidbit('24hr', this.formatPercent(coin.percent_change_24h))}
+						{this.renderTidbit('7d', this.formatPercent(coin.percent_change_7d))}
+						{this.renderTidbit('Post Mentions', coin.postMentions)}
+						{this.renderTidbit('Comment Mentions', coin.commentMentions)}
+						{this.renderTidbit('Weighted Score', coin.totalScore.toFixed(2))}
 					</Card.Subtitle>
 				</Card.Primary>
 				<Card.Media className="card-media">
