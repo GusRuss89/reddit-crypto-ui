@@ -1,5 +1,6 @@
 # Custom stuff
 build
+src/db
 
 # Logs
 logs

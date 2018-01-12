@@ -4,12 +4,19 @@ import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import Rheostat from 'preact-rheostat';
 import './rheostat.css';
+import Select from 'preact-material-components/Select';
+import 'preact-material-components/List/style.css';
+import 'preact-material-components/Menu/style.css';
+import 'preact-material-components/Select/style.css';
 
 import Coin from './coin';
 import style from './style';
 
 TimeAgo.locale(en);
 const timeAgo = new TimeAgo('en-AU');
+const timeAgoStyle = {
+	units: ['second', 'minute', 'hour', 'day']
+};
 
 export default class Home extends Component {
 	constructor (props) {
@@ -17,7 +24,11 @@ export default class Home extends Component {
 		this.state = {
 			coins: [],
 			minCoinRank: 1,
-			maxCoinRank: 200
+			maxCoinRank: 200,
+			comparisons: [],
+			chosenComparison: 0,
+			comparison: {},
+			loadingComparison: false
 		};
 	}
 
@@ -25,38 +36,89 @@ export default class Home extends Component {
 		axios.get(`./db/db.json`)
 			.then(res => {
 				this.setState({
-					coins: res.data.dates[0].coins,
-					maxScore: res.data.dates[0].coins[0].totalScore,
-					lastUpdated: res.data.dates[0].date
+					coins: res.data.latest.coins,
+					maxScore: res.data.latest.coins[0].totalScore,
+					lastUpdated: res.data.latest.date,
+					comparisons: res.data.dates
 				});
 			})
 			.catch(err => console.error(new Error('Couldn\'t get JSON')));
 	}
 
+	updateComparison = (date) => {
+		axios.get(`./db/db-${date}.json`)
+			.then(res => {
+				this.setState({
+					comparison: res.data.latest,
+					loadingComparison: false
+				});
+			})
+			.catch(err => console.error(new Error('Couldn\'t get comparison')));
+	}
+
+	getCoinComparison = (coin) => {
+		if (this.state.comparison.hasOwnProperty('coins')) {
+			const filtered = this.state.comparison.coins.filter((cCoin) => cCoin.id === coin.id);
+			return filtered.length ? filtered[0] : null;
+		} else {
+			return null;
+		}
+	}
+
 	handleSliderUpdate = (data) => {
-		console.log(data);
 		this.setState({
 			minCoinRank: data.values[0],
 			maxCoinRank: data.values[1]
 		});
 	}
 
+	handleCompareChange = (e) => {
+		const comparison = this.state.comparisons[e.selectedIndex-1];
+		if (typeof comparison === 'object' && comparison.hasOwnProperty('date')) {
+			this.updateComparison(this.state.comparisons[e.selectedIndex-1].date);
+			this.setState({
+				chosenComparison: e.selectedIndex,
+				loadingComparison: true
+			});
+		} else {
+			this.setState({
+				comparison: {},
+				chosenComparison: e.selectedIndex
+			});
+		}
+	}
+
 	renderCoins = () => this.state.coins.map(coin => {
 		if (coin.rank >= this.state.minCoinRank && coin.rank <= this.state.maxCoinRank) {
-			return <Coin coin={coin} percent={coin.totalScore / this.state.maxScore * 100} />;
+			return <Coin coin={coin} comparison={this.getCoinComparison(coin)} percent={coin.totalScore / this.state.maxScore * 100} />;
 		}
 	});
+
+	renderComparisonOptions = () => {
+		return this.state.comparisons.map(comparison => <Select.Item>{timeAgo.format(parseInt(comparison.date, 10), timeAgoStyle)}</Select.Item>)
+	}
 
 	render(props, state) {
 		return (
 			<div class={style.home}>
 				<h1>Top CryptoCurrencies by Reddit Mentions</h1>
-				<p style={{margin: '-8px 0 20px'}}>Last updated {timeAgo.format(parseInt(state.lastUpdated, 10))}</p>
-				<div style={{display: 'inline-block', width: '100%', maxWidth: '400px'}}>
-					<div>Include coins ranked: {state.minCoinRank} - {state.maxCoinRank}</div> 
-					<Rheostat min={1} max={200} values={[state.minCoinRank, state.maxCoinRank]} snap onValuesUpdated={this.handleSliderUpdate} />
+				<p style={{margin: '-8px 0 20px'}}>Last updated {timeAgo.format(parseInt(state.lastUpdated, 10), timeAgoStyle)}</p>
+				<div class={style.controls}>
+					<div class={style.control}>
+						<label class={style.label}>Include coins ranked: {state.minCoinRank} - {state.maxCoinRank}</label> 
+						<Rheostat min={1} max={200} values={[state.minCoinRank, state.maxCoinRank]} snap onValuesUpdated={this.handleSliderUpdate} />
+					</div>
+					<div class={style.control}>
+						<label class={style.label}>Compare to previous runs {state.loadingComparison && `(loading...)`}</label>
+						<Select _hintText="Compare with"
+							selectedIndex={this.state.chosenComparison}
+							onChange={this.handleCompareChange}
+						>
+							<Select.Item>None</Select.Item>
+							{this.renderComparisonOptions()}
+						</Select>
+					</div>
 				</div>
-				<br style={{clear: 'both'}} />
 				{this.renderCoins()}
 			</div>
 		);

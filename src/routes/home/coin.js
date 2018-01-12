@@ -32,6 +32,27 @@ export default class Coin extends Component {
 		return <span style={{color: colour}}>{val}%</span>;
 	}
 
+	compare = (prop) => {
+		const { comparison, coin } = this.props;
+		if (comparison !== null) {
+			let colour = 'inherit';
+			let symbol = '';
+			let change = parseFloat(comparison[prop]) - parseFloat(coin[prop]);
+			change = change.toFixed(0);
+			if (change > 0) {
+				colour = 'green';
+				symbol = '+';
+			} else if (change < 0) {
+				colour = 'red';
+			} else {
+				change = '-';
+			}
+			return <span>{coin[prop].toFixed(0)} (<span style={{color: colour}}>{symbol}{change}</span>)</span>;
+		} else {
+			return <span>{coin[prop].toFixed(0)}</span>;
+		}
+	}
+
 	renderTidbit = (key, value) => {
 		return <div style={{display: 'inline-block', marginRight: '15px' }}><strong>{key}:</strong> {value}</div>;
 	}
@@ -48,7 +69,7 @@ export default class Coin extends Component {
 		));
 	}
 
-	render({ coin, percent }, state) {
+	render({ coin, percent, comparison }, state) {
 		return (
 			<Card>
 				<Card.Primary>
@@ -59,9 +80,9 @@ export default class Coin extends Component {
 						{this.renderTidbit('1hr', this.formatPercent(coin.percent_change_1h))}
 						{this.renderTidbit('24hr', this.formatPercent(coin.percent_change_24h))}
 						{this.renderTidbit('7d', this.formatPercent(coin.percent_change_7d))}
-						{this.renderTidbit('Post Mentions', coin.postMentions)}
-						{this.renderTidbit('Comment Mentions', coin.commentMentions)}
-						{this.renderTidbit('Weighted Score', coin.totalScore.toFixed(2))}
+						{this.renderTidbit('Post Mentions', this.compare('postMentions'))}
+						{this.renderTidbit('Comment Mentions', this.compare('commentMentions'))}
+						{this.renderTidbit('Weighted Score', this.compare('totalScore'))}
 					</Card.Subtitle>
 				</Card.Primary>
 				<Card.Media className="card-media">

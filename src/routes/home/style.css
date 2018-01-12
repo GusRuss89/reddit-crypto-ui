@@ -3,3 +3,27 @@
 	min-height: 100%;
 	width: 100%;
 }
+
+.label {
+	display: block;
+	padding-bottom: 5px;
+}
+.controls {
+	display: block;
+	margin-bottom: 10px;
+}
+.control {
+	display: inline-block;
+	vertical-align: top;
+	margin-right: 20px;
+	width: 100%;
+	max-width: 400px;
+}
+
+:global .mdc-select {
+	min-width: 200px;
+	height: 40px;
+}
+:global .mdc-select__surface {
+	height: 40px !important;
+}
