@@ -10,18 +10,18 @@
 }
 .controls {
 	display: block;
-	margin-bottom: 10px;
 }
 .control {
 	display: inline-block;
 	vertical-align: top;
-	margin-right: 20px;
+	margin-right: 26px;
 	width: 100%;
-	max-width: 400px;
+	max-width: 250px;
+	margin-bottom: 15px;
 }
 
 :global .mdc-select {
-	min-width: 200px;
+	min-width: 250px;
 	height: 40px;
 }
 :global .mdc-select__surface {

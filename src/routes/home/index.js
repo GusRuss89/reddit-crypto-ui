@@ -102,12 +102,8 @@ export default class Home extends Component {
 		return (
 			<div class={style.home}>
 				<h1>Top CryptoCurrencies by Reddit Mentions</h1>
-				<p style={{margin: '-8px 0 20px'}}>Last updated {timeAgo.format(parseInt(state.lastUpdated, 10), timeAgoStyle)}</p>
+				<p style={{margin: '-8px 0 20px', fontStyle: 'italic'}}>Last updated {timeAgo.format(parseInt(state.lastUpdated, 10), timeAgoStyle)}</p>
 				<div class={style.controls}>
-					<div class={style.control}>
-						<label class={style.label}>Include coins ranked: {state.minCoinRank} - {state.maxCoinRank}</label> 
-						<Rheostat min={1} max={200} values={[state.minCoinRank, state.maxCoinRank]} snap onValuesUpdated={this.handleSliderUpdate} />
-					</div>
 					<div class={style.control}>
 						<label class={style.label}>Compare to previous runs {state.loadingComparison && `(loading...)`}</label>
 						<Select _hintText="Compare with"
@@ -117,6 +113,10 @@ export default class Home extends Component {
 							<Select.Item>None</Select.Item>
 							{this.renderComparisonOptions()}
 						</Select>
+					</div>
+					<div class={style.control}>
+						<label class={style.label}>Include coins ranked: {state.minCoinRank} - {state.maxCoinRank}</label> 
+						<Rheostat min={1} max={200} values={[state.minCoinRank, state.maxCoinRank]} snap onValuesUpdated={this.handleSliderUpdate} />
 					</div>
 				</div>
 				{this.renderCoins()}

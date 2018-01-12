@@ -22,7 +22,7 @@ export default class Header extends Component {
 
 	openDrawer = () => (this.drawer.MDComponent.open = true);
 
-	openSettings = () => this.dialog.MDComponent.show();
+	openDialog = () => this.dialog.MDComponent.show();
 
 	drawerRef = drawer => (this.drawer = drawer);
 	dialogRef = dialog => (this.dialog = dialog);
@@ -57,39 +57,47 @@ export default class Header extends Component {
 				<Toolbar className="toolbar">
 					<Toolbar.Row>
 						<Toolbar.Section align-start>
-							{/*<Toolbar.Icon menu onClick={this.openDrawer}>
+							<Toolbar.Icon menu onClick={this.openDrawer}>
 								menu
-							</Toolbar.Icon>*/}
+							</Toolbar.Icon>
 							<Toolbar.Title>Reddit CryptoCurrency Monitor</Toolbar.Title>
 						</Toolbar.Section>
-						<Toolbar.Section align-end onClick={this.openSettings}>
-							<Toolbar.Icon>settings</Toolbar.Icon>
+						<Toolbar.Section align-end>
+							<div style="margin-right: 15px;">
+								Dark theme &nbsp; <Switch onClick={this.toggleDarkTheme} />
+							</div>
 						</Toolbar.Section>
 					</Toolbar.Row>
 				</Toolbar>
-				{/*<Drawer.TemporaryDrawer ref={this.drawerRef}>
+				<Drawer.TemporaryDrawer ref={this.drawerRef}>
 					<Drawer.TemporaryDrawerContent>
 						<List>
-							<List.LinkItem onClick={this.goHome}>
-								<List.ItemIcon>home</List.ItemIcon>
-								Home
+							<List.LinkItem href="https://github.com/GusRuss89/reddit-crypto-ui" target="_blank">
+								<List.ItemIcon>tv</List.ItemIcon>
+								Front end code
 							</List.LinkItem>
-							<List.LinkItem onClick={this.goToMyProfile}>
-								<List.ItemIcon>account_circle</List.ItemIcon>
-								Profile
+							<List.LinkItem href="https://github.com/GusRuss89/reddit-crypto-monitor" target="_blank">
+								<List.ItemIcon>code</List.ItemIcon>
+								Back end code
+							</List.LinkItem>
+							<List.LinkItem onClick={this.openDialog}>
+								<List.ItemIcon>attach_money</List.ItemIcon>
+								Donate
 							</List.LinkItem>
 						</List>
 					</Drawer.TemporaryDrawerContent>
-				</Drawer.TemporaryDrawer>*/}
+				</Drawer.TemporaryDrawer>
 				<Dialog ref={this.dialogRef}>
-					<Dialog.Header>Settings</Dialog.Header>
+					<Dialog.Header>Donate</Dialog.Header>
 					<Dialog.Body>
-						<div>
-							Enable dark theme <Switch onClick={this.toggleDarkTheme} />
-						</div>
+						<ul>
+							<li>XRB: xrb_3ceqsfona5a9usuwpfyd9m36ibmdk7r97ajf7cmkwbhu69nsnabus86fhyp5</li>
+							<li>BTC: 18MmG36SM77uUvkSrsjhnTiZS46nuiq1qz</li>
+							<li>ETH: 0x11249fC1D239ac9c624765e0EDF20f2Bc7dd3F3d</li>
+						</ul>
 					</Dialog.Body>
 					<Dialog.Footer>
-						<Dialog.FooterButton accept>okay</Dialog.FooterButton>
+						<Dialog.FooterButton accept>Done</Dialog.FooterButton>
 					</Dialog.Footer>
 				</Dialog>
 			</div>
