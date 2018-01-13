@@ -8,6 +8,8 @@ import Select from 'preact-material-components/Select';
 import 'preact-material-components/List/style.css';
 import 'preact-material-components/Menu/style.css';
 import 'preact-material-components/Select/style.css';
+import TextField from 'preact-material-components/TextField';
+import 'preact-material-components/TextField/style.css';
 
 import Coin from './coin';
 import style from './style';
@@ -28,7 +30,8 @@ export default class Home extends Component {
 			comparisons: [],
 			chosenComparison: 0,
 			comparison: {},
-			loadingComparison: false
+			loadingComparison: false,
+			search: ''
 		};
 	}
 
@@ -88,9 +91,22 @@ export default class Home extends Component {
 		}
 	}
 
+	handleSearchUpdate = (e) => {
+		this.setState({
+			search: e.target.value
+		});
+	}
+
 	renderCoins = () => this.state.coins.map(coin => {
+		// Rank
 		if (coin.rank >= this.state.minCoinRank && coin.rank <= this.state.maxCoinRank) {
-			return <Coin coin={coin} comparison={this.getCoinComparison(coin)} percent={coin.totalScore / this.state.maxScore * 100} />;
+			// Search
+			let search = this.state.search.toUpperCase();
+			let name = coin.name.toUpperCase();
+			let symbol = coin.symbol.toUpperCase();
+			if (search === '' || name.indexOf(search) >= 0 || symbol.indexOf(search) >= 0) {
+				return <Coin coin={coin} comparison={this.getCoinComparison(coin)} percent={coin.totalScore / this.state.maxScore * 100} />;
+			}
 		}
 	});
 
@@ -105,9 +121,13 @@ export default class Home extends Component {
 				<p style={{margin: '-8px 0 20px', fontStyle: 'italic'}}>Last updated {timeAgo.format(parseInt(state.lastUpdated, 10), timeAgoStyle)}</p>
 				<div class={style.controls}>
 					<div class={style.control}>
+						<label class={style.label}>Filter</label>
+						<TextField value={state.search} placeholder="Search..." onInput={this.handleSearchUpdate} />
+					</div>
+					<div class={style.control}>
 						<label class={style.label}>Compare to previous runs {state.loadingComparison && `(loading...)`}</label>
 						<Select _hintText="Compare with"
-							selectedIndex={this.state.chosenComparison}
+							selectedIndex={state.chosenComparison}
 							onChange={this.handleCompareChange}
 						>
 							<Select.Item>None</Select.Item>

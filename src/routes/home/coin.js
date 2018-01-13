@@ -37,7 +37,7 @@ export default class Coin extends Component {
 		if (comparison !== null) {
 			let colour = 'inherit';
 			let symbol = '';
-			let change = parseFloat(comparison[prop]) - parseFloat(coin[prop]);
+			let change = parseFloat(coin[prop]) - parseFloat(comparison[prop]);
 			change = change.toFixed(0);
 			if (change > 0) {
 				colour = 'green';
